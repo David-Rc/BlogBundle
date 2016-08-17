@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block navigation %}
+    <nav>
+        <ul class="navigation">
+            <li><a href="{{ path('blog_page_index') }}">Accueil</a></li>
+            <li><a href="{{ path('profil') }}">Mon compte</a></li>
+            <li><a href="{{ path('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+{% block body %}
+    <ol>
+        {% for comment in comments %}
+            <li>{{ comment.id }} Article : {{ comment.article.title }} commentaire : {{ comment.content }} posté le : {{ comment.date|date("d/m/Y") }}<button><a href="{{ path('blog_delete_comment', { 'id': comment.id }) }}"><span class="glyphicon glyphicon-remove"></span></a></button></li>
+        {% endfor %}
+    </ol>
+    <button><a href="{{ path('profil') }}"><span class="glyphicon glyphicon-arrow-left"></span></a></button>
+{% endblock %}

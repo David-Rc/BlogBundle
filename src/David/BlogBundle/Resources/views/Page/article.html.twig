@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block sidebar %}
+    {% if is_granted('ROLE_USER') %}
+    <div class="flex">
+        <div class="row">
+
+            <div class="col-md-12">
+                <h2>Posté un commentaire : </h2>
+                {{ form_start(form) }}
+                {{ form_end(form) }}
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <a href="{{ path('blog_page_index') }}"><span class="glyphicon glyphicon-arrow-left"></span></a>
+        <h1>{{ article.title }}</h1>
+        {% if article.image is not null  %}
+                <img src="{{ article.image.url }}" alt="{{ article.image.alt }}"/>
+        {% endif %}
+        <p>{{ article.content }}</p>
+
+
+        <div class="panel panel-primary">
+            {% if comments is not null %}
+                <ul>
+                    {% for item in comments %}
+                        <li><div class="panel-heading">
+                                {{ item.author.username }} :
+                            </div><div class="panel-body">{{ item.content }}</div></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    <p>Vous avez lu cet article : {{ x }} fois</p>
+{% endblock %}
+

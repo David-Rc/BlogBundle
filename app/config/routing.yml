@@ -1,0 +1,33 @@
+david_user:
+    resource: "@DavidUserBundle/Controller/"
+    type:     annotation
+    prefix:   /blog
+
+david_blog:
+    resource: "@DavidBlogBundle/Resources/config/routing.yml"
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+register:
+    path: /register
+    defaults:
+        _controller: DavidUserBundle:Security:register
+
+login:
+    path: /login
+    defaults:
+        _controller: DavidUserBundle:Security:login
+
+login_check:
+    path: /login_check
+
+logout:
+    path: /logout
+
+profil:
+    path: /profil
+    defaults:
+        _controller: DavidUserBundle:User:index

@@ -1,0 +1,48 @@
+blog_page_index:
+    path:    /
+    defaults: { _controller: DavidBlogBundle:Page:index }
+
+blog_page_article:
+    path:    /blog/article/{id}
+    defaults: { _controller: DavidBlogBundle:Page:view }
+
+blog_admin_index:
+    path:    /blog/admin
+    defaults: { _controller: DavidBlogBundle:Admin:index }
+
+blog_admin_article:
+    path:   /blog/admin/article/{id}
+    defaults: { _controller: DavidBlogBundle:Admin:article }
+
+
+blog_admin_delete_article:
+    path:    /blog/admin/delete/article/{id}
+    defaults: { _controller: DavidBlogBundle:Admin:deleteArticle }
+
+blog_admin_delete_comment:
+    path:    /blog/admin/delete/comment/{id}
+    defaults: { _controller: DavidBlogBundle:Admin:deleteComment }
+
+blog_register:
+    path:    /register
+    defaults: { _controller: DavidUserBundle:Security:Register }
+
+blog_add:
+    path:    /add
+    defaults: { _controller: DavidBlogBundle:Page:add }
+
+posted_comment:
+    path:    /posted_comment/{author}
+    defaults: { _controller: DavidUserBundle:User:postedComment }
+
+blog_delete_comment:
+    path:    /delete/comment/{id}
+    defaults: { _controller: DavidUserBundle:User:deleteComment }
+
+add_article:
+    path:    /add/article
+    defaults: { _controller: DavidBlogBundle:Admin:addArticle }
+
+modify_profil:
+    path:   /modify/profil/
+    defaults: { _controller: DavidUserBundle:User:modifyProfil }

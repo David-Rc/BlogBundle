@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block navigation %}
+    <nav>
+        <ul class="navigation">
+            <li><a href="{{ path('blog_page_index') }}">Accueil</a></li>
+            <li><a href="{{ path('profil') }}">Mon compte</a></li>
+            <li><a href="{{ path('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+{% block body %}
+    <h1>Hello {{ name }}</h1>
+    <div>
+        {% for article in articles %}
+           <a href="{{ path('blog_admin_article', {'id': article.id }) }}"><h2>
+
+                   {{ article.title }} : {% if article.published == true %} <span>Publié</span> {% elseif article.published == false %} <span>Non publié</span> {% endif %}
+
+               </h2></a>
+        {% endfor %}
+    </div>
+    <button><a href="{{ path('add_article') }}">Ajouter un article</a></button>
+{% endblock %}

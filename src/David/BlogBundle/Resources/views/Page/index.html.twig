@@ -1,0 +1,25 @@
+
+{% extends 'base.html.twig' %}
+
+{% block navigation %}
+    <nav>
+        <ul class="navigation">
+            <li><a href="{{ path('blog_page_index') }}">Accueil</a></li>
+            <li><a href="{{ path('profil') }}">Mon compte</a></li>
+            {% if is_granted('ROLE_ADMIN') %}
+                <li><a href="{{ path('blog_admin_index') }}">Back-Office</a></li>
+            {% endif %}
+            <li><a href="{{ path('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block body %}
+
+    <h2>Hello {{ name }}</h2>
+
+    {% for article in articles %}
+        <h2><a href="{{ path('blog_page_article', {'id': article.id }) }}">{{ article.title }}</a></h2>
+    {% endfor %}
+
+{% endblock %}
