@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\File\File;
 
 
 class AdminController extends Controller
@@ -62,7 +63,6 @@ class AdminController extends Controller
          * @route("/blog/admin/article/{id}" name="blog_admin_article")
          */
 
-
         $repository = $this->getDoctrine()
             ->getManager()
             ->getRepository('DavidBlogBundle:Article');
@@ -75,26 +75,28 @@ class AdminController extends Controller
 
         $comments = $repository2->findBy(array('article'=>$article));
 
-//        $form = $this->createFormBuilder($article)
-//            ->add('title', TextType::class)
-//            ->add('content', TextareaType::class)
-//            ->add('author', TextType::class)
-//            ->add('published', ChoiceType::class, array(
-//                'choices' => array(
-//                    'yes' => true,
-//                    'no' => false,
-//                )
-//            ))
-//            ->add('save', SubmitType::class)
-//            ->getForm();
+        $image = $article->getImage()->getUrl();
 
-        $form = $this->get('form.factory')->create(ArticleType::class, $article);
+        $form = $this->createForm(ArticleType::class, $article);
 
         $form->handleRequest($request);
 
         if ($form->isValid() && $form->isSubmitted()) {
             $article = $form->getData();
-            $article->setAuthor($this->getUser()->getUsername());
+            if($form->getData()->getImage()->getUrl())
+            {
+                $img = $article->getImage()->getUrl();
+                $imgName = md5(uniqid()).'.'.$img->guessExtension();
+                $img->move(
+                    $this->getParameter('img_directory'),
+                    $imgName
+                );
+                $article->getImage()->setUrl($imgName);
+            } else
+            {
+                $article->getImage()->setUrl($image);
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($article);
             $em->flush();
@@ -121,11 +123,22 @@ class AdminController extends Controller
 
         $article = $em->getRepository('DavidBlogBundle:Article')->findOneBy(array('id'=>$id));
 
+        $comments = $em->getRepository('DavidBlogBundle:Comment')->findBy(array('article'=>$article));
+
+
+        $img = $article->getImage()->getId();
+        $image = $em->getRepository('DavidBlogBundle:Image')->findOneBy(array('id'=>$img));
+
+        foreach($comments as $comment)
+        {
+            $em->remove($comment);
+        }
+
+        $em->remove($image);
+
         $em->remove($article);
 
-            $em->flush();
-
-
+        $em->flush();
 
         return $this->redirect('/blog/admin');
     }
@@ -154,6 +167,7 @@ class AdminController extends Controller
     {
         $article = new Article();
         $article->setDate(new \DateTime());
+        $article->setAuthor($this->getUser()->getUsername());
 
         $form = $this->createForm(ArticleType::class, $article);
 
@@ -161,6 +175,13 @@ class AdminController extends Controller
 
         if ($form->isValid() && $form->isSubmitted()) {
             $article = $form->getData();
+            $img = $article->getImage()->getUrl();
+            $imgName = md5(uniqid()).'.'.$img->guessExtension();
+            $img->move(
+                $this->getParameter('img_directory'),
+                $imgName
+            );
+            $article->getImage()->setUrl($imgName);
             $em = $this->getDoctrine()->getManager();
             $em->persist($article);
             $em->flush();

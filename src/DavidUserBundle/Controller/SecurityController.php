@@ -31,6 +31,14 @@ class SecurityController extends Controller
 
             $user->setPassword($hash);
 
+            $avatar = $user->getAvatar();
+            $avatarName = md5(uniqid()).'.'.$avatar->guessExtension();
+            $avatar->move(
+                $this->getParameter('avatar_directory'),
+                $avatarName
+            );
+            $user->setAvatar($avatarName);
+
             $em = $this->getDoctrine()->getManager();
 
             $em->persist($user);

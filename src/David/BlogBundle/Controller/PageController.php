@@ -85,11 +85,6 @@ class PageController extends Controller
          * @Security("has_role('ROLE_USER')")
          */
 
-//        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
-//        {
-//            return $this->redirectToRoute('blog_admin_index');
-//        }
-
         if($this->getUser()){
             $user = $this->getUser()->getUsername();
         } else {
@@ -217,7 +212,7 @@ class PageController extends Controller
             ->getManager()
             ->getRepository('DavidBlogBundle:Comment');
 
-        $comments = $repository2->findBy(array('article'=>$article));
+        $comments = $repository2->findBy(array('article'=>$article), array('id'=>'desc'));
 
 
         return $this->render('DavidBlogBundle:Page:article.html.twig', array

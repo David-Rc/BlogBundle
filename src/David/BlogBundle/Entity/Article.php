@@ -64,6 +64,7 @@ class Article
     private $image;
 
 
+    
     /**
      * Get id
      *
@@ -217,4 +218,5 @@ class Article
     {
         return $this->image;
     }
+
 }

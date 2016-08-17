@@ -55,8 +55,14 @@ class User implements UserInterface, \Serializable
      *
      * @ORM\Column(name="roles", type="array")
      */
-    private $roles = ['ROLE_USER'];
+    private $roles;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="avatar", type="string", length=255)
+     */
+    private $avatar;
 
     /**
      * Get id
@@ -185,7 +191,9 @@ class User implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        return $this->roles;
+        $roles = array('ROLE_USER');
+
+        return $roles;
     }
 
     /**
@@ -200,8 +208,6 @@ class User implements UserInterface, \Serializable
         $this->id,
         $this->username,
         $this->password,
-        // see section on salt below
-        // $this->salt,
     ));
     }
 
@@ -220,8 +226,6 @@ class User implements UserInterface, \Serializable
             $this->id,
             $this->username,
             $this->password,
-            // see section on salt below
-            // $this->salt
             ) = unserialize($serialized);
     }
 
@@ -235,6 +239,8 @@ class User implements UserInterface, \Serializable
     public function getSalt()
     {
         // TODO: Implement getSalt() method.
+
+        return null;
     }
 
     /**
@@ -248,4 +254,3 @@ class User implements UserInterface, \Serializable
         // TODO: Implement eraseCredentials() method.
     }
 }
-

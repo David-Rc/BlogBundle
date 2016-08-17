@@ -2,14 +2,14 @@
 {% block body %}
     <h1>{{ article.title }}</h1>
     {% if article.image is not null  %}
-        <img src="{{ article.image.url }}" alt="{{ article.image.alt }}"/>
+        <img src="/bundles/framework/images/{{ article.image.url }}" alt="{{ article.image.alt }}"/>
     {% endif %}
     <p>{{ article.content }}</p>
     <p>Publié par {{ article.author }} le {{ article.date | date('d/m/Y') }}</p>
     {% if comments is not null %}
         <ul>
             {% for item in comments %}
-                <li>{{ item.author }} : {{ item.content }} <button><a href="{{ path('blog_admin_delete_comment', {'id': item.id }) }}">X</a></button></li>
+                <li><img class="img-thumbnail" src="/avatars/{{ item.author.avatar }}"/>{{ item.author.username }} : {{ item.content }} <button><a href="{{ path('blog_admin_delete_comment', {'id': item.id }) }}">X</a></button></li>
             {% endfor %}
         </ul>
     {% endif %}

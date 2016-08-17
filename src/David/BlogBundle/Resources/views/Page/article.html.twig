@@ -18,7 +18,7 @@
     <a href="{{ path('blog_page_index') }}"><span class="glyphicon glyphicon-arrow-left"></span></a>
         <h1>{{ article.title }}</h1>
         {% if article.image is not null  %}
-                <img src="{{ article.image.url }}" alt="{{ article.image.alt }}"/>
+                <img src="/bundles/framework/images/{{ article.image.url }}" alt="{{ article.image.alt }}"/>
         {% endif %}
         <p>{{ article.content }}</p>
 
@@ -28,7 +28,8 @@
                 <ul>
                     {% for item in comments %}
                         <li><div class="panel-heading">
-                                {{ item.author.username }} :
+                                <img class='img-thumbnail' src="/avatars/{{ item.author.avatar }}"/>
+                                <p>{{ item.author.username }} : </p>
                             </div><div class="panel-body">{{ item.content }}</div></li>
                     {% endfor %}
                 </ul>
