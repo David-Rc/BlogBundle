@@ -2,6 +2,7 @@ blog_page_index:
     path:    /
     defaults: { _controller: DavidBlogBundle:Page:index }
 
+
 blog_page_article:
     path:    /blog/article/{id}
     defaults: { _controller: DavidBlogBundle:Page:view }
@@ -42,7 +43,24 @@ blog_delete_comment:
 add_article:
     path:    /add/article
     defaults: { _controller: DavidBlogBundle:Admin:addArticle }
+    methods: [get, post]
+
+modify_article:
+    path:   /modify/article/{id}
+    defaults: { _controller: DavidBlogBundle:Admin:modifyArticle }
 
 modify_profil:
     path:   /modify/profil/
     defaults: { _controller: DavidUserBundle:User:modifyProfil }
+
+delete_profil:
+    path:  /delete/profil/
+    defaults: { _controller: DavidUserBundle:User:deleteProfil }
+
+no_publish:
+    path:  /article/noPublish
+    defaults: { _controller: DavidBlogBundle:Admin:noPublish }
+
+publish:
+    path:  /article/Publish
+    defaults: { _controller: DavidBlogBundle:Admin:publish }

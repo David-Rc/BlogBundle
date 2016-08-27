@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Article
  *
- * @ORM\Table(name="article")
+ * @ORM\Table(name="articles")
  * @ORM\Entity(repositoryClass="David\BlogBundle\Repository\ArticleRepository")
  */
 class Article
@@ -63,7 +63,11 @@ class Article
      */
     private $image;
 
-
+    /**
+     * @ORM\OneToOne(targetEntity="David\BlogBundle\Entity\Img", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $img;
     
     /**
      * Get id
@@ -219,4 +223,27 @@ class Article
         return $this->image;
     }
 
+    /**
+     * Set img
+     *
+     * @param \David\BlogBundle\Entity\Img $img
+     *
+     * @return Article
+     */
+    public function setImg(\David\BlogBundle\Entity\Img $img)
+    {
+        $this->img = $img;
+
+        return $this;
+    }
+
+    /**
+     * Get img
+     *
+     * @return \David\BlogBundle\Entity\Img
+     */
+    public function getImg()
+    {
+        return $this->img;
+    }
 }

@@ -23,6 +23,7 @@ class CommentType extends AbstractType
             'class' => 'form-control',
             'rows'  => 3,
             'cols'  => 20,
+            'placeholder'=>'Ecrivez un commentaire'
         )))
            ->add('save', SubmitType::class, array('label' => 'Valider',
                'attr' => array(

@@ -9,10 +9,22 @@
     </nav>
 {% endblock %}
 {% block body %}
-    <ol>
+    <a style="margin: 1%" href="{{ path('profil') }}"><span class="glyphicon glyphicon-arrow-left"></span></a>
+    <ul>
         {% for comment in comments %}
-            <li>{{ comment.id }} Article : {{ comment.article.title }} commentaire : {{ comment.content }} posté le : {{ comment.date|date("d/m/Y") }}<button><a href="{{ path('blog_delete_comment', { 'id': comment.id }) }}"><span class="glyphicon glyphicon-remove"></span></a></button></li>
+            <li>
+                <div class="panel panel-primary">
+                    <div class="panel panel-heading">
+                        Article : <a style="color: white; font-weight: bold"  href="{{ path('blog_page_article', {'id': comment.article.id}) }}">{{ comment.article.title }}</a>
+                        <a style="float: right" href="{{ path('blog_delete_comment', { 'id': comment.id }) }}"><span class="glyphicon glyphicon-remove"></span></a>
+                    </div>
+                    <div style="clear: both" class="panel panel-body">
+                        <p>{{ comment.content }}</p>
+                        <p>posté le : {{ comment.date|date("d/m/Y") }}</p>
+                    </div>
+                </div>
+               </li>
         {% endfor %}
-    </ol>
-    <button><a href="{{ path('profil') }}"><span class="glyphicon glyphicon-arrow-left"></span></a></button>
+    </ul>
+
 {% endblock %}

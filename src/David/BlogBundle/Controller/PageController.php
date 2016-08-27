@@ -3,21 +3,10 @@
 namespace David\BlogBundle\Controller;
 
 use David\BlogBundle\Entity\Comment;
-use David\BlogBundle\Entity\Articles;
-use David\BlogBundle\Entity\Article;
-use David\BlogBundle\Entity\Image;
 use David\BlogBundle\Form\CommentType;
-use DavidUserBundle\Entity\Admin;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 class PageController extends Controller
@@ -25,41 +14,22 @@ class PageController extends Controller
     public $articles;
     public $session;
 
-//    public function __construct()
-//    {
-//        $this->articles = $this->initArticles();
-//    }
-
-//    public function initArticles()
-//    {
-//        for($i=0; $i<5; $i++)
-//        {
-//
-//            $title = 'Article_';
-//            $content = 'Hello World ';
-//            $article = new Articles($i, $title.$i, $content.$i);
-//            $articles[$i] = $article;
-//
-//        };
-//
-//        return $articles;
-//
-//    }
-
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
 
-//    // Création d'un admin.
-//    public function addAction(Request $request)
+// Création d'un utilisateur administrateur (Utile dans le cadre de la certification Simplon)
+//
+//   public function addAction(Request $request)
 //    {
 //
 //        $admin = new Admin();
 //
 //        $admin->setUsername('root');
 //        $password = 'root';
-//        $admin->setEmail('admin@localhost.com');
+//        $admin->setEmail('role@localhost.com');
+//        $admin->setRoles('ROLE_ADMIN');
 //        $admin->setIsActivate(true);
 //
 //        $hash = $this->get('security.password_encoder')->encodePassword($admin, $password);
@@ -74,8 +44,7 @@ class PageController extends Controller
 //
 //        return $this->render('DavidBlogBundle:Page:add.html.twig');
 //    }
-
-
+//
 
     public function indexAction(Request $request)
     {
@@ -84,6 +53,8 @@ class PageController extends Controller
          * @Route("/blog", name="blog_page_index")
          * @Security("has_role('ROLE_USER')")
          */
+
+        //Verification de l'identification
 
         if($this->getUser()){
             $user = $this->getUser()->getUsername();
@@ -108,21 +79,20 @@ class PageController extends Controller
             ->getManager()
             ->getRepository('DavidBlogBundle:Article');
 
-////////////////////////////////////////SELECT ALL ARTICLE : DOCTRINE//////////////////////////////////////////////
+////////////////////////////////////////SELECT ARTICLE WHERE PUBLISHED = TRUE : DOCTRINE//////////////////////////////////////////////
+        //Récupere les articles dont l'option publié est vrai.
 
-        $article = $repository->findBy(
+        $articles = $repository->findBy(
             array(
                 'published' => 1
         ));
 
 /////////////////////////////////////////RENDER///////////////////////////////////////////////////////////
-
-        return $this->render(
-            'DavidBlogBundle:Page:index.html.twig', array(
-            'articles'=>$article,
-            'name'=>$user
-
-        ));
+                return $this->render(
+                    'DavidBlogBundle:Page:index.html.twig', array(
+                    'articles'=>$articles,
+                    'name'=>$user,
+                ));
     }
 
 
@@ -140,6 +110,7 @@ class PageController extends Controller
          */
 
 ////////////////////////////////////////////INIT SESSION//////////////////////////////////////
+        // Petit test de session qui permet de comptabiliser la lecture d'un l'article
 
         $session = $request->getSession();
 
@@ -155,7 +126,7 @@ class PageController extends Controller
 
 
      ////////////////////////////////////VIEW COUNT///////////////////////////////////////////
-        //
+        //Vous avez lu cet article x fois.
 
         $x = 0;
 
@@ -170,7 +141,9 @@ class PageController extends Controller
         $session->set('view', $view);
 
 
-////////////////////////////////////// SELECT ID => ARTICLE : DOCTRINE //////////////////////////////////
+////////////////////////////////////// SELECT ARTICLE => ID : DOCTRINE //////////////////////////////////
+        //Récupere l'article qui correspond à l'id et au titre de la page index. Fonctionne au click
+
 
         $repository = $this->getDoctrine()
             ->getManager()
@@ -184,29 +157,37 @@ class PageController extends Controller
         }
 
         ///////////////////////////////////FORM////////////////////////////////////////
-
-        $comment = new Comment();
-        $date = new \DateTime();
-        $comment->setDate($date);
-        $comment->setArticle($article);
-        $comment->setAuthor($this->getUser());
-
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid())
+        if($this->getUser())
         {
 
-            $comment = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
+            $comment = new Comment();
+            $date = new \DateTime();
+            $comment->setDate($date);
+            $comment->setArticle($article);
+            $comment->setAuthor($this->getUser());
 
-            $this->redirect('/blog/article/'.$id);
+            $form = $this->createForm(CommentType::class, $comment);
+            $form->handleRequest($request);
 
+            if($form->isSubmitted() && $form->isValid())
+            {
+
+                $comment = $form->getData();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($comment);
+                $em->flush();
+                unset($comments);
+                unset($form);
+                $comment = new Comment();
+                $form = $this->createForm(CommentType::class, $comment);
+                $this->redirect('/blog/article/'.$id);
+
+            }
         }
 
+
 ///////////////////////////////////  SELECT TASK ID => ARTICLE : DOCTRINE////////////////////////
+        //Recupere les commentaires liée à l'article
 
         $repository2 = $this->getDoctrine()
             ->getManager()
@@ -214,17 +195,31 @@ class PageController extends Controller
 
         $comments = $repository2->findBy(array('article'=>$article), array('id'=>'desc'));
 
+//////////////////////////////////// RETURN THIS RENDER/////////////////////////////////////
+        /*
+         * Si l'utilisateur est identifier, alors il peut posté des commentaire,
+         * sinon il est considérer comme visiteur et ne peux que lire les articles et leurs commentaires.
+         */
 
-        return $this->render('DavidBlogBundle:Page:article.html.twig', array
-        (
+        if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
+        {
+            return $this->render('DavidBlogBundle:Page:article.html.twig', array
+            (
+                'form'=> $form->createView(),
+                'article'=>$article,
+                'comments'=>$comments,
+                'x'=>$x,
+            ));
+        }else
+        {
+            return $this->render('DavidBlogBundle:Page:article.html.twig', array
+            (
+                'article'=>$article,
+                'comments'=>$comments,
+                'x'=>$x,
+            ));
+        }
 
-            'form'=> $form->createView(),
-            'article'=>$article,
-            'comments'=>$comments,
-            'x'=>$x,
-
-        ));
     }
-
 }
 

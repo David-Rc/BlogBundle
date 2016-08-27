@@ -1,20 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block navigation %}
-    <nav>
+    <nav class="laptop-screen">
         <ul class="navigation">
             <li><a href="{{ path('blog_page_index') }}">Accueil</a></li>
             <li><a href="{{ path('profil') }}">Mon compte</a></li>
             <li><a href="{{ path('logout') }}">Logout</a></li>
         </ul>
     </nav>
+    <nav class="mobile-screen">
+        <ul class="navigation">
+            <li><a href="{{ path('blog_page_index') }}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li><a href="{{ path('profil') }}"><span class="glyphicon glyphicon-user"></span></a></li>
+            <li><a href="{{ path('logout') }}"><span class="glyphicon glyphicon-log-out"></span></a></li>
+        </ul>
+    </nav>
 {% endblock %}
 
 {% block body %}
-    <img src="/avatars/{{ app.user.avatar }}" />
+    <img src="/avatars/{{ app.user.avatar }}" class="img-responsive" />
     <h1>Hello {{ app.user.username }}</h1>
-    <h2>ID : {{ app.user.id }}</h2>
-    <button><a href="{{ path('posted_comment', { 'author': app.user.id }) }}">Commentaires postés</a></button>
-    <button><a href="{{ path('modify_profil') }}">Modifier le profil</a></button>
-
+    <div class="laptop-screen">
+        <button class="btn btn-primary"><a href="{{ path('posted_comment', { 'author': app.user.id }) }}">Commentaires postés</a></button>
+        <button class="btn btn-primary"><a href="{{ path('modify_profil') }}">Modifier le profil</a></button>
+        <button class="btn btn-danger" onclick="validation()"><a href="{{ path('delete_profil') }}">Supprimer</a></button>
+    </div>
+    <div class="mobile-screen">
+        <button class="btn btn-primary"><a href="{{ path('posted_comment', { 'author': app.user.id }) }}"><span class="glyphicon glyphicon-th-list"></span></a></button>
+        <button class="btn btn-primary"><a href="{{ path('modify_profil') }}"><span class="glyphicon glyphicon-edit"></span></a></button>
+        <button class="btn btn-danger" onclick="validation()"><a href="{{ path('delete_profil') }}"><span style="color: white" class=" glyphicon glyphicon-remove"></span></a></button>
+    </div>
 {% endblock %}

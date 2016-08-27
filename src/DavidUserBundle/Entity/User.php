@@ -179,7 +179,8 @@ class User implements UserInterface, \Serializable
      */
     public function setRoles($roles)
     {
-        $this->roles = $roles;
+
+        $this->roles = array($roles);
 
         return $this;
     }
@@ -191,9 +192,7 @@ class User implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        $roles = array('ROLE_USER');
-
-        return $roles;
+        return $this->roles;
     }
 
     /**

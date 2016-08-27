@@ -1,24 +1,30 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h1>{{ article.title }}</h1>
-    {% if article.image is not null  %}
-        <img src="/bundles/framework/images/{{ article.image.url }}" alt="{{ article.image.alt }}"/>
-    {% endif %}
-    <p>{{ article.content }}</p>
-    <p>Publié par {{ article.author }} le {{ article.date | date('d/m/Y') }}</p>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <a href="{{ path('blog_admin_index') }}"><span class="glyphicon glyphicon-arrow-left"></span></a><h3>{{ article.title }}</h3>
+            <div class="mobile-screen">
+                <a href="{{ path('modify_article', {'id': article.id}) }}"><span class="glyphicon glyphicon-edit"></span></a>
+                <a href="{{ path('blog_admin_delete_article', {'id': article.id }) }}"><span class="glyphicon glyphicon-remove"></span></a>
+            </div>
+        </div>
+        <div class="panel-content">
+            {% if article.image is not null  %}
+                <img class="img-responsive" src="/bundles/framework/images/{{ article.image.url }}" alt="{{ article.image.alt }}"/>
+            {% endif %}
+            <p class="content">{{ article.content }}</p></br>
+            <p class="info">Publié par {{ article.author }} le {{ article.date | date('d/m/Y') }}</p>
+        </div>
+    </div>
     {% if comments is not null %}
-        <ul>
+        <ul class="list">
             {% for item in comments %}
-                <li><img class="img-thumbnail" src="/avatars/{{ item.author.avatar }}"/>{{ item.author.username }} : {{ item.content }} <button><a href="{{ path('blog_admin_delete_comment', {'id': item.id }) }}">X</a></button></li>
+                <li><img class="img-thumbnail" src="/avatars/{{ item.author.avatar }}"/>{{ item.author.username }} : {{ item.content }} <a href="{{ path('blog_admin_delete_comment', {'id': item.id }) }}"><span class="glyphicon glyphicon-remove"></span></a></li>
             {% endfor %}
         </ul>
     {% endif %}
-    <button><a href="{{ path('blog_admin_delete_article', {'id': article.id }) }}">DELETE</a></button>
-    <button><a href="{{ path('blog_admin_index') }}">Retour</a></button>
+    <div class="laptop-screen">
+        <button class="btn btn-primary"><a href="{{ path('modify_article', {'id': article.id}) }}">Modifier</a></button>
+        <button class="btn btn-danger"><a href="{{ path('blog_admin_delete_article', {'id': article.id }) }}">Supprimer</a></button>
+    </div>
     {% endblock %}
-
-{% block sidebar %}
-    <h2>Modifier l'article : </h2>
-    {{ form_start(form) }}
-    {{ form_end(form) }}
-{% endblock %}

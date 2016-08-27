@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <a href="{{ path('blog_admin_index') }}"><span class="glyphicon glyphicon-arrow-left"></span></a>
+    {% if form.vars.valid and form.vars.value %}
+        <div id="res" class="alert alert-success">Votre article à bien été créer, il est actuellement {% if article.published == true %}Publié{% elseif article.published == false %}non Publié{% endif %}</div>
+    {% elseif not form.vars.valid %}
+        <div id="res" class="alert alert-danger">Il y à eu une erreur lors de votre saisie</div>
+    {% endif %}
     {{ form_start(form) }}
     {{  form_end(form) }}
 {% endblock %}

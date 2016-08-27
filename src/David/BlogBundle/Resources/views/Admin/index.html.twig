@@ -1,23 +1,50 @@
 {% extends 'base.html.twig' %}
 {% block navigation %}
-    <nav>
+    <nav class="laptop-screen">
         <ul class="navigation">
             <li><a href="{{ path('blog_page_index') }}">Accueil</a></li>
             <li><a href="{{ path('profil') }}">Mon compte</a></li>
             <li><a href="{{ path('logout') }}">Logout</a></li>
         </ul>
     </nav>
+    <nav class="mobile-screen">
+        <ul class="navigation">
+
+                <li><a href="{{ path('blog_page_index') }}"><span class="glyphicon glyphicon-home"></span></a></li>
+                <li><a href="{{ path('profil') }}"><span class="glyphicon glyphicon-user"></span></a></li>
+                <li><a href="{{ path('logout') }}"><span class="glyphicon glyphicon-log-out"></span></a></li>
+
+        </ul>
+    </nav>
 {% endblock %}
 {% block body %}
-    <h1>Hello {{ name }}</h1>
-    <div>
+    <h2>Hello {{ name }}</h2>
+    <div id="section">
+                    {% if action  %}
+
+
+
+                    {% endif %}
+        <div id="divPage">
         {% for article in articles %}
-           <a href="{{ path('blog_admin_article', {'id': article.id }) }}"><h2>
 
-                   {{ article.title }} : {% if article.published == true %} <span>Publié</span> {% elseif article.published == false %} <span>Non publié</span> {% endif %}
+                <h2 class="article_title">
+                    <a href="{{ path('blog_admin_article', {'id': article.id }) }}">{{ article.title }}</a>  : {% if article.published == true %}<span class="true">Publié</span> {% elseif article.published == false %} <span class="false">Non publié</span> {% endif %}
+                </h2>
 
-               </h2></a>
         {% endfor %}
+        </div>
     </div>
-    <button><a href="{{ path('add_article') }}">Ajouter un article</a></button>
+    <div id="page"></div>
+    <div class="laptop-screen">
+        {% if noPublish == false or all == true %}<button><a href="{{ path('no_publish') }}">Voir articles non publiés</a></button>{% endif %}
+        {% if publish == false or all == true %}<button><a href="{{ path('publish') }}">Voir articles publiés</a></button>{% endif %}
+        <button><a href="{{ path('add_article') }}">Ajouter un article</a></button>
+    </div>
+    <div class="mobile-screen">
+        <a href="{{ path('add_article') }}"><span class="glyphicon glyphicon-pencil"></span></a></button>
+        {% if noPublish == false or all == true %}<a href="{{ path('no_publish') }}"><span class="glyphicon glyphicon-eye-close"></span></a>{% endif %}
+        {% if publish == false or all == true %}<a href="{{ path('publish') }}"><span class="glyphicon glyphicon-eye-open"></span></a>{% endif %}
+    </div>
+
 {% endblock %}

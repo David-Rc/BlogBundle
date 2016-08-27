@@ -48,32 +48,50 @@ class UserController extends Controller
         return $this->redirect('/posted_comment/'.$user->getId());
     }
 
-    public function modifyProfilAction()
+    public function modifyProfilAction(Request $request)
     {
-     $user = $this->getUser();
-        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
-        {
-            $form = $this->createForm(AdminType::class, $user);
-        } else {
+            $user = $this->getUser();
+            $avatar = $user->getAvatar();
             $form = $this->createForm(UserType::class, $user);
-        }
 
+        $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
             $user = $form->getData();
 
+//            if(!$user->getUsername())
+//            {
+//                $user->setUsername($username);
+//            }
+//
+//            if(!$user->getAvatar())
+//            {
+//                $user->setAvatar($avatar);
+//            }
+//
+//            if(!$user->getPassword())
+//            {
+//                $user->setPassworrd($pass);
+//            }
+
             $hash = $this->get('security.password_encoder')->encodePassword($user, $user->getPassword());
 
             $user->setPassword($hash);
 
-            $avatar = $user->getAvatar();
-            $avatarName = md5(uniqid()).'.'.$avatar->guessExtension();
-            $avatar->move(
-                $this->getParameter('avatar_directory'),
-                $avatarName
-            );
-            $user->setAvatar($avatarName);
+            $ava = $user->getAvatar();
+            if($form->getData()->getAvatar())
+            {
+                $avatarName = md5(uniqid()).'.'.$ava->guessExtension();
+                $ava->move(
+                    $this->getParameter('avatar_directory'),
+                    $avatarName
+                );
+                $user->setAvatar($avatarName);
+            } else {
+                $user->setAvatar($avatar);
+            }
+
 
 
             $em = $this->getDoctrine()->getManager();
@@ -82,13 +100,44 @@ class UserController extends Controller
 
             $em->flush();
 
-            return $this->redirect('/modify/profil/'.$user->getId());
+            return $this->redirect('/profil');
 
         }
 
         return $this->render('DavidUserBundle:User:modifyProfil.html.twig', array(
             'form'=>$form->createView()
         ));
+    }
+
+    public function deleteProfilAction()
+    {
+
+        $user = $this->getUser();
+
+        $em = $this->getDoctrine()
+            ->getEntityManager();
+
+
+        $comments = $em->getRepository('DavidBlogBundle:Comment')->findBy(array('author'=>$user));
+        if($comments)
+        {
+            foreach($comments as $comment)
+            {
+                $em->remove($comment);
+            }
+        }
+
+        if($user->getAvatar()){
+            $img = $user->getAvatar();
+            $image = $em->getRepository('DavidBlogBundle:Image')->findOneBy(array('id'=>$img));
+            $em->remove($image);
+        }
+
+        $em->remove($user);
+
+        $em->flush();
+
+        return $this->redirect('/login');
     }
 }
 

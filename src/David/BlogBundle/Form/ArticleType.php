@@ -20,18 +20,33 @@ class ArticleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('content', TextareaType::class)
+            ->add('title', TextType::class, array(
+                'attr'=>array(
+                    'class'=>'form-control',
+                    'type'=>'text'
+                )
+            ))
+            ->add('content', TextareaType::class, array(
+                'attr'=>array(
+                    'class'=>'form-control',
+                    'type'=>'textarea'
+                )
+            ))
             ->add('published', ChoiceType::class, array(
                 'choices'=>array(
                     'yes'=>true,
                     'no'=>false,
-                )
+                ),
             ))
             ->add('image', ImageType::class, array(
-                'required'=>false
+                'required'=>false,
+                'label'=>false,
             ))
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, array(
+                'attr'=>array(
+                    'class'=>'btn btn-primary'
+                )
+            ))
         ;
     }
     

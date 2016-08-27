@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Comment
  *
- * @ORM\Table(name="comment")
+ * @ORM\Table(name="comments")
  * @ORM\Entity(repositoryClass="David\BlogBundle\Repository\CommentRepository")
  */
 class Comment

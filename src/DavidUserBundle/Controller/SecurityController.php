@@ -18,7 +18,7 @@ class SecurityController extends Controller
         }
 
         $user = new User();
-        $user->setRoles(array('ROLE_USER'));
+        $user->setRoles('ROLE_USER');
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);

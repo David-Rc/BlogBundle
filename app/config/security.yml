@@ -3,18 +3,12 @@
 security:
 
     encoders:
-        DavidUserBundle\Entity\Admin: bcrypt
         DavidUserBundle\Entity\User: bcrypt
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        chain_provider:
-            chain:
-                providers: [db_user, db_admin]
         db_user:
             entity: { class: DavidUserBundle:User, property: username }
-        db_admin:
-            entity: { class: DavidUserBundle:Admin, property: username }
         in_memory:
             memory: ~
 
@@ -30,7 +24,7 @@ security:
         main:
             pattern: ^/
             http_basic: ~
-            provider: chain_provider
+            provider: db_user
             anonymous: true
             form_login:
                 login_path: login
